@@ -9,6 +9,13 @@
     body {
       background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
       min-height: 100vh;
+      padding: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 1.5rem;
+      }
     }
 
     .tab-btn.active {
@@ -18,10 +25,17 @@
     }
 
     .status-badge {
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 14px;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
       font-weight: 600;
+    }
+
+    @media (min-width: 768px) {
+      .status-badge {
+        padding: 0.375rem 1rem;
+        font-size: 0.875rem;
+      }
     }
 
     .status-待上菜 { background: #FEF3C7; color: #D97706; }
@@ -29,55 +43,59 @@
     .status-已结账 { background: #E5E7EB; color: #6B7280; }
   </style>
 </head>
-<body class="p-6">
+<<body>
   <div class="max-w-7xl mx-auto">
     <!-- 页头 -->
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">🏪 商家后台管理</h1>
-        <p class="text-gray-600">菜品管理 & 订单管理</p>
+    <div class="mb-6 md:mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-1 md:mb-2">🏪 商家后台管理</h1>
+          <p class="text-sm md:text-base text-gray-600">菜品管理 & 订单管理</p>
+        </div>
+        <button onclick="goBack()" class="w-full sm:w-auto px-4 md:px-6 lg:px-8 py-2 md:py-3 lg:py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-full text-sm md:text-base lg:text-xl font-medium">
+          返回首页
+        </button>
       </div>
-      <button onclick="goBack()" class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-full text-xl font-medium">
-        返回首页
-      </button>
     </div>
 
     <!-- 标签页切换 -->
-    <div class="flex gap-4 mb-8">
-      <button onclick="switchTab('dishes')" id="dishesTab" class="tab-btn flex-1 py-4 rounded-xl text-xl font-medium bg-white hover:bg-gray-100 transition-all">
+    <div class="flex gap-2 md:gap-4 mb-6 md:mb-8">
+      <button onclick="switchTab('dishes')" id="dishesTab" class="tab-btn flex-1 py-3 md:py-4 rounded-lg md:rounded-xl text-sm md:text-base lg:text-xl font-medium bg-white hover:bg-gray-100 transition-all">
         菜品管理
       </button>
-      <button onclick="switchTab('orders')" id="ordersTab" class="tab-btn flex-1 py-4 rounded-xl text-xl font-medium bg-white hover:bg-gray-100 transition-all">
+      <button onclick="switchTab('orders')" id="ordersTab" class="tab-btn flex-1 py-3 md:py-4 rounded-lg md:rounded-xl text-sm md:text-base lg:text-xl font-medium bg-white hover:bg-gray-100 transition-all">
         订单管理
       </button>
     </div>
 
     <!-- 菜品管理区域 -->
     <div id="dishesSection" class="hidden">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">菜品列表</h2>
-        <button onclick="showAddDishModal()" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full font-bold">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 md:gap-4 mb-4 md:mb-6">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-800">菜品列表</h2>
+        <button onclick="showAddDishModal()" class="w-full sm:w-auto px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full text-sm md:text-base font-bold">
           + 添加菜品
         </button>
       </div>
 
-      <!-- 菜系筛选 -->
-      <div class="mb-6 flex gap-2 flex-wrap">
-        <button onclick="filterDishes('全部')" class="filter-btn px-4 py-2 rounded-lg bg-amber-500 text-white font-medium">全部</button>
-        <button onclick="filterDishes('豫菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">豫菜</button>
-        <button onclick="filterDishes('鲁菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">鲁菜</button>
-        <button onclick="filterDishes('川菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">川菜</button>
-        <button onclick="filterDishes('粤菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">粤菜</button>
-        <button onclick="filterDishes('苏菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">苏菜</button>
-        <button onclick="filterDishes('浙菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">浙菜</button>
-        <button onclick="filterDishes('闽菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">闽菜</button>
-        <button onclick="filterDishes('湘菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">湘菜</button>
-        <button onclick="filterDishes('徽菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">徽菜</button>
-        <button onclick="filterDishes('主食')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">主食</button>
-        <button onclick="filterDishes('饮品')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">饮品</button>
+      <!-- 菜系筛选：手机上横向滚动 -->
+      <div class="mb-4 md:mb-6 overflow-x-auto">
+        <div class="flex gap-2 pb-2 min-w-max md:flex-wrap">
+          <button onclick="filterDishes('全部')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-amber-500 text-white font-medium text-sm md:text-base whitespace-nowrap">全部</button>
+          <button onclick="filterDishes('豫菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">豫菜</button>
+          <button onclick="filterDishes('鲁菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">鲁菜</button>
+          <button onclick="filterDishes('川菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">川菜</button>
+          <button onclick="filterDishes('粤菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">粤菜</button>
+          <button onclick="filterDishes('苏菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">苏菜</button>
+          <button onclick="filterDishes('浙菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">浙菜</button>
+          <button onclick="filterDishes('闽菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">闽菜</button>
+          <button onclick="filterDishes('湘菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">湘菜</button>
+          <button onclick="filterDishes('徽菜')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">徽菜</button>
+          <button onclick="filterDishes('主食')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">主食</button>
+          <button onclick="filterDishes('饮品')" class="filter-btn px-3 md:px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm md:text-base whitespace-nowrap">饮品</button>
+        </div>
       </div>
 
-      <div id="dishesTable" class="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div id="dishesTable" class="bg-white rounded-xl md:rounded-2xl shadow-lg overflow-hidden">
         <!-- 菜品表格由JavaScript生成 -->
       </div>
     </div>

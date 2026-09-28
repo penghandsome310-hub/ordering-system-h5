@@ -57,7 +57,63 @@ function loadOrders() {
 // 创建订单卡片
 function createOrderCard(order) {
   const card = document.createElement('div');
-  card.className = 'bg-white rounded-2xl shadow-lg overflow-hidden';
+  card.className = 'bg-white rounded-xl md:rounded-2xl shadow-lg overflow-hidden';
+
+  // 状态颜色
+  const statusColors = {
+    '待上菜': 'bg-yellow-100 text-yellow-800',
+    '已上菜': 'bg-green-100 text-green-800',
+    '已结账': 'bg-gray-100 text-gray-800'
+  };
+
+  card.innerHTML = `
+    <div class="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-3 md:p-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <div class="text-xs md:text-sm opacity-90">订单号</div>
+          <div class="text-base md:text-lg lg:text-xl font-bold">#${order.orderNumber}</div>
+        </div>
+        <div class="flex items-center gap-2 md:gap-4">
+          <div class="text-right">
+            <div class="text-xs md:text-sm opacity-90">下单时间</div>
+            <div class="text-xs md:text-base">${order.createTime}</div>
+          </div>
+          <span class="status-badge ${statusColors[order.status]} text-xs md:text-sm px-2 md:px-3 py-1">${order.status}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-3 md:p-4 lg:p-6">
+      <!-- 菜品列表 -->
+      <div class="space-y-2 md:space-y-3 mb-3 md:mb-4">
+        ${order.dishes.map(dish => `
+          <div class="flex items-center gap-2 md:gap-3 pb-2 md:pb-3 border-b">
+            <img src="${dish.image}" alt="${dish.name}" class="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover flex-shrink-0">
+            <div class="flex-1 min-w-0">
+              <div class="text-sm md:text-base lg:text-lg font-medium text-gray-800 truncate">${dish.name}</div>
+              <div class="text-xs md:text-sm text-gray-500">¥${dish.price} × ${dish.quantity}</div>
+            </div>
+            <div class="text-sm md:text-base lg:text-lg font-bold text-amber-600 flex-shrink-0">¥${(dish.price * dish.quantity).toFixed(0)}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      ${order.note ? `
+        <div class="bg-gray-50 p-2 md:p-3 rounded-lg mb-3 md:mb-4">
+          <div class="text-xs md:text-sm text-gray-600 mb-1">备注</div>
+          <div class="text-sm md:text-base text-gray-800">${order.note}</div>
+        </div>
+      ` : ''}
+
+      <div class="flex items-center justify-between pt-3 md:pt-4 border-t-2">
+        <div class="text-base md:text-lg lg:text-xl font-medium text-gray-700">订单总额</div>
+        <div class="text-xl md:text-2xl lg:text-3xl font-bold text-amber-600">¥${order.totalPrice.toFixed(0)}</div>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
 
   // 格式化时间
   const createTime = new Date(order.createTime);

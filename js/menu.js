@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 显示当前桌号
   document.getElementById('currentTable').textContent = tableNumber + '号桌';
+  document.getElementById('currentTableMobile').textContent = tableNumber + '号桌';
   document.getElementById('modalTableNumber').textContent = tableNumber + '号桌';
 
   // 加载购物车数据
@@ -45,7 +46,7 @@ function renderCategories() {
 
   CATEGORIES.forEach(category => {
     const button = document.createElement('button');
-    button.className = `category-btn w-full py-4 px-3 mb-2 rounded-xl text-lg font-medium transition-all ${
+    button.className = `category-btn category-btn-mobile transition-all ${
       category === currentCategory ? 'active' : 'bg-white hover:bg-amber-50 text-gray-700'
     }`;
     button.textContent = category;
@@ -71,7 +72,7 @@ function renderDishes(category) {
   dishesGrid.innerHTML = '';
 
   if (dishes.length === 0) {
-    dishesGrid.innerHTML = '<div class="col-span-3 text-center text-gray-500 text-xl py-12">该菜系暂无菜品</div>';
+    dishesGrid.innerHTML = '<div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center text-gray-500 text-base md:text-xl py-12">该菜系暂无菜品</div>';
     return;
   }
 
@@ -84,7 +85,7 @@ function renderDishes(category) {
 // 创建菜品卡片
 function createDishCard(dish) {
   const card = document.createElement('div');
-  card.className = 'bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden';
+  card.className = 'bg-white rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden';
 
   // 获取该菜品在购物车中的数量
   const cartItem = cart.find(item => item.id === dish.id);
@@ -106,23 +107,23 @@ function createDishCard(dish) {
 
   card.innerHTML = `
     <div class="relative">
-      <img src="${dish.image}" alt="${dish.name}" class="w-full h-48 object-cover">
-      ${dish.tags.includes('招牌') ? '<div class="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">🔥 招牌</div>' : ''}
+      <img src="${dish.image}" alt="${dish.name}" class="w-full h-40 sm:h-48 object-cover">
+      ${dish.tags.includes('招牌') ? '<div class="absolute top-2 left-2 bg-red-500 text-white px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-bold">🔥 招牌</div>' : ''}
     </div>
-    <div class="p-4">
+    <div class="p-3 md:p-4">
       <div class="flex items-start justify-between mb-2">
-        <h3 class="text-xl font-bold text-gray-800 flex-1">${dish.name} ${spicyHtml}</h3>
-        <div class="text-2xl font-bold text-amber-600">¥${dish.price}</div>
+        <h3 class="text-base md:text-xl font-bold text-gray-800 flex-1">${dish.name} ${spicyHtml}</h3>
+        <div class="text-lg md:text-2xl font-bold text-amber-600">¥${dish.price}</div>
       </div>
-      <p class="text-gray-600 text-sm mb-3 line-clamp-2">${dish.description}</p>
+      <p class="text-gray-600 text-xs md:text-sm mb-2 md:mb-3 line-clamp-2">${dish.description}</p>
       <div class="flex items-center justify-between">
-        <div class="flex gap-1">${tagsHtml}</div>
-        <div class="flex items-center gap-3">
+        <div class="flex gap-1 flex-wrap">${tagsHtml}</div>
+        <div class="flex items-center gap-2 md:gap-3">
           ${quantity > 0 ? `
-            <button onclick="decreaseQuantity(${dish.id})" class="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-full text-xl font-bold">-</button>
-            <span class="text-xl font-bold text-gray-800 w-8 text-center">${quantity}</span>
+            <button onclick="decreaseQuantity(${dish.id})" class="w-8 h-8 md:w-10 md:h-10 bg-gray-200 hover:bg-gray-300 rounded-full text-lg md:text-xl font-bold">-</button>
+            <span class="text-base md:text-xl font-bold text-gray-800 w-6 md:w-8 text-center">${quantity}</span>
           ` : ''}
-          <button onclick="addToCart(${dish.id})" class="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-full text-2xl font-bold shadow-lg">+</button>
+          <button onclick="addToCart(${dish.id})" class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-full text-xl md:text-2xl font-bold shadow-lg">+</button>
         </div>
       </div>
     </div>
@@ -195,20 +196,20 @@ function updateCartPanel() {
 
   cart.forEach(item => {
     const itemDiv = document.createElement('div');
-    itemDiv.className = 'flex items-center justify-between bg-white p-3 rounded-lg';
+    itemDiv.className = 'flex items-center justify-between bg-white p-2 md:p-3 rounded-lg';
     itemDiv.innerHTML = `
-      <div class="flex items-center gap-3 flex-1">
-        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover">
-        <div class="flex-1">
-          <div class="font-medium text-gray-800">${item.name}</div>
-          <div class="text-sm text-amber-600">¥${item.price}</div>
+      <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+        <img src="${item.image}" alt="${item.name}" class="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover flex-shrink-0">
+        <div class="flex-1 min-w-0">
+          <div class="font-medium text-gray-800 text-sm md:text-base truncate">${item.name}</div>
+          <div class="text-xs md:text-sm text-amber-600">¥${item.price}</div>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <button onclick="decreaseQuantity(${item.id})" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full text-lg">-</button>
-        <span class="text-lg font-bold w-6 text-center">${item.quantity}</span>
-        <button onclick="addToCart(${item.id})" class="w-8 h-8 bg-amber-500 hover:bg-amber-600 text-white rounded-full text-lg">+</button>
-        <button onclick="removeFromCart(${item.id})" class="ml-2 text-red-500 hover:text-red-700 text-xl">🗑️</button>
+      <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
+        <button onclick="decreaseQuantity(${item.id})" class="w-7 h-7 md:w-8 md:h-8 bg-gray-200 hover:bg-gray-300 rounded-full text-base md:text-lg">-</button>
+        <span class="text-base md:text-lg font-bold w-5 md:w-6 text-center">${item.quantity}</span>
+        <button onclick="addToCart(${item.id})" class="w-7 h-7 md:w-8 md:h-8 bg-amber-500 hover:bg-amber-600 text-white rounded-full text-base md:text-lg">+</button>
+        <button onclick="removeFromCart(${item.id})" class="ml-1 md:ml-2 text-red-500 hover:text-red-700 text-lg md:text-xl">🗑️</button>
       </div>
     `;
     cartItemsList.appendChild(itemDiv);

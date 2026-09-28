@@ -16,30 +16,37 @@
     body {
       background: linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%);
       min-height: 100vh;
+      padding: 1rem;
+    }
+    @media (min-width: 640px) {
+      body {
+        padding: 2rem;
+      }
     }
   </style>
 </head>
-<body class="flex items-center justify-center p-8">
-  <div class="w-full max-w-6xl">
+<body class="flex items-center justify-center">
+  <div class="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
     <!-- 标题区 -->
-    <div class="text-center mb-12">
-      <h1 class="text-5xl font-bold text-amber-800 mb-4">🍽️ 欢迎光临</h1>
-      <p class="text-2xl text-amber-700">请选择您的桌号</p>
+    <div class="text-center mb-6 sm:mb-8 lg:mb-12">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-800 mb-2 sm:mb-4">🍽️ 欢迎光临</h1>
+      <p class="text-lg sm:text-xl lg:text-2xl text-amber-700">请选择您的桌号</p>
     </div>
 
     <!-- 桌号选择区 -->
-    <div class="bg-white rounded-3xl shadow-2xl p-8">
-      <div class="grid grid-cols-5 gap-6" id="tableGrid">
+    <div class="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8">
+      <!-- 手机2列、平板3列、桌面5列 -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6" id="tableGrid">
         <!-- 桌号按钮将由JavaScript生成 -->
       </div>
     </div>
 
     <!-- 底部功能区 -->
-    <div class="mt-8 flex justify-center gap-4">
-      <button onclick="goToAdmin()" class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-full text-xl font-medium transition-all">
+    <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+      <button onclick="goToAdmin()" class="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-full text-base sm:text-lg lg:text-xl font-medium transition-all">
         商家后台
       </button>
-      <button onclick="clearAllData()" class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-full text-xl font-medium transition-all">
+      <button onclick="clearAllData()" class="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-red-600 hover:bg-red-700 text-white rounded-full text-base sm:text-lg lg:text-xl font-medium transition-all">
         清空所有数据
       </button>
     </div>
@@ -55,7 +62,7 @@
     const tableGrid = document.getElementById('tableGrid');
     for (let i = 1; i <= 20; i++) {
       const button = document.createElement('button');
-      button.className = 'aspect-square bg-gradient-to-br from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-2xl text-3xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200';
+      button.className = 'aspect-square bg-gradient-to-br from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-xl sm:rounded-2xl text-xl sm:text-2xl lg:text-3xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200';
       button.textContent = `${i}号桌`;
       button.onclick = () => selectTable(i);
 
