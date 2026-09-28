@@ -1,0 +1,12 @@
+{
+  "name": "ordering-system-h5",
+  "version": "1.0.0",
+  "description": "门店平板自助点餐系统 - H5网页版",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8080"
+  },
+  "keywords": ["restaurant", "ordering", "h5", "tablet"],
+  "author": "",
+  "license": "MIT"
+}

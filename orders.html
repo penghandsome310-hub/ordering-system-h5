@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>本桌订单 - 门店平板点餐系统</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+      min-height: 100vh;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-待上菜 {
+      background: #FEF3C7;
+      color: #D97706;
+    }
+
+    .status-已上菜 {
+      background: #D1FAE5;
+      color: #059669;
+    }
+
+    .status-已结账 {
+      background: #E5E7EB;
+      color: #6B7280;
+    }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- 页头 -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-4xl font-bold text-amber-800 mb-2">本桌订单</h1>
+        <p class="text-xl text-gray-600">桌号: <span id="tableNumber" class="font-bold text-amber-600"></span></p>
+      </div>
+      <div class="flex gap-4">
+        <button onclick="continueShopping()" class="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full text-xl font-bold shadow-lg">
+          继续点餐
+        </button>
+        <button onclick="goBack()" class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-full text-xl font-medium">
+          返回选桌
+        </button>
+      </div>
+    </div>
+
+    <!-- 订单统计 -->
+    <div class="grid grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="text-gray-500 mb-2">订单总数</div>
+        <div class="text-4xl font-bold text-amber-600" id="totalOrders">0</div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="text-gray-500 mb-2">待上菜</div>
+        <div class="text-4xl font-bold text-orange-600" id="pendingOrders">0</div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="text-gray-500 mb-2">累计消费</div>
+        <div class="text-4xl font-bold text-green-600">¥<span id="totalAmount">0</span></div>
+      </div>
+    </div>
+
+    <!-- 订单列表 -->
+    <div id="ordersList" class="space-y-6">
+      <!-- 订单卡片由JavaScript生成 -->
+    </div>
+
+    <!-- 空状态 -->
+    <div id="emptyState" class="hidden text-center py-20">
+      <div class="text-6xl mb-4">🍽️</div>
+      <div class="text-2xl text-gray-500 mb-6">暂无订单</div>
+      <button onclick="continueShopping()" class="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full text-xl font-bold">
+        开始点餐
+      </button>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/orders.js"></script>
+</body>
+</html>

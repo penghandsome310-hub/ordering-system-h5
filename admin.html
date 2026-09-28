@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商家后台 - 门店平板点餐系统</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+      min-height: 100vh;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #D97706 0%, #EA580C 100%);
+      color: white;
+      font-weight: bold;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-待上菜 { background: #FEF3C7; color: #D97706; }
+    .status-已上菜 { background: #D1FAE5; color: #059669; }
+    .status-已结账 { background: #E5E7EB; color: #6B7280; }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- 页头 -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">🏪 商家后台管理</h1>
+        <p class="text-gray-600">菜品管理 & 订单管理</p>
+      </div>
+      <button onclick="goBack()" class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-full text-xl font-medium">
+        返回首页
+      </button>
+    </div>
+
+    <!-- 标签页切换 -->
+    <div class="flex gap-4 mb-8">
+      <button onclick="switchTab('dishes')" id="dishesTab" class="tab-btn flex-1 py-4 rounded-xl text-xl font-medium bg-white hover:bg-gray-100 transition-all">
+        菜品管理
+      </button>
+      <button onclick="switchTab('orders')" id="ordersTab" class="tab-btn flex-1 py-4 rounded-xl text-xl font-medium bg-white hover:bg-gray-100 transition-all">
+        订单管理
+      </button>
+    </div>
+
+    <!-- 菜品管理区域 -->
+    <div id="dishesSection" class="hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">菜品列表</h2>
+        <button onclick="showAddDishModal()" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full font-bold">
+          + 添加菜品
+        </button>
+      </div>
+
+      <!-- 菜系筛选 -->
+      <div class="mb-6 flex gap-2 flex-wrap">
+        <button onclick="filterDishes('全部')" class="filter-btn px-4 py-2 rounded-lg bg-amber-500 text-white font-medium">全部</button>
+        <button onclick="filterDishes('豫菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">豫菜</button>
+        <button onclick="filterDishes('鲁菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">鲁菜</button>
+        <button onclick="filterDishes('川菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">川菜</button>
+        <button onclick="filterDishes('粤菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">粤菜</button>
+        <button onclick="filterDishes('苏菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">苏菜</button>
+        <button onclick="filterDishes('浙菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">浙菜</button>
+        <button onclick="filterDishes('闽菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">闽菜</button>
+        <button onclick="filterDishes('湘菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">湘菜</button>
+        <button onclick="filterDishes('徽菜')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">徽菜</button>
+        <button onclick="filterDishes('主食')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">主食</button>
+        <button onclick="filterDishes('饮品')" class="filter-btn px-4 py-2 rounded-lg bg-white hover:bg-gray-100">饮品</button>
+      </div>
+
+      <div id="dishesTable" class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <!-- 菜品表格由JavaScript生成 -->
+      </div>
+    </div>
+
+    <!-- 订单管理区域 -->
+    <div id="ordersSection" class="hidden">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">全部订单</h2>
+        <div class="flex gap-4">
+          <button onclick="filterOrders('全部')" class="order-filter-btn px-6 py-2 rounded-lg bg-amber-500 text-white font-medium">全部</button>
+          <button onclick="filterOrders('待上菜')" class="order-filter-btn px-6 py-2 rounded-lg bg-white hover:bg-gray-100">待上菜</button>
+          <button onclick="filterOrders('已上菜')" class="order-filter-btn px-6 py-2 rounded-lg bg-white hover:bg-gray-100">已上菜</button>
+          <button onclick="filterOrders('已结账')" class="order-filter-btn px-6 py-2 rounded-lg bg-white hover:bg-gray-100">已结账</button>
+        </div>
+      </div>
+
+      <div id="ordersTable" class="space-y-4">
+        <!-- 订单列表由JavaScript生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加/编辑菜品弹窗 -->
+  <div id="dishModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6" id="dishModalTitle">添加菜品</h2>
+
+      <form id="dishForm" class="space-y-4">
+        <input type="hidden" id="dishId">
+
+        <div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">菜品名称</label>
+          <input type="text" id="dishName" required class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none text-lg">
+        </div>
+
+        <div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">菜系</label>
+          <select id="dishCategory" required class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none text-lg">
+            <option value="豫菜">豫菜</option>
+            <option value="鲁菜">鲁菜</option>
+            <option value="川菜">川菜</option>
+            <option value="粤菜">粤菜</option>
+            <option value="苏菜">苏菜</option>
+            <option value="浙菜">浙菜</option>
+            <option value="闽菜">闽菜</option>
+            <option value="湘菜">湘菜</option>
+            <option value="徽菜">徽菜</option>
+            <option value="主食">主食</option>
+            <option value="饮品">饮品</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">价格（元）</label>
+          <input type="number" id="dishPrice" required min="0" step="1" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none text-lg">
+        </div>
+
+        <div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">图片链接</label>
+          <input type="url" id="dishImage" required class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none text-lg">
+        </div>
+
+        <div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">菜品描述</label>
+          <textarea id="dishDescription" required rows="3" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none text-lg"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">辣度</label>
+          <select id="dishSpicy" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none text-lg">
+            <option value="0">不辣</option>
+            <option value="1">微辣 🌶️</option>
+            <option value="2">中辣 🌶️🌶️</option>
+            <option value="3">特辣 🌶️🌶️🌶️</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">标签（多选）</label>
+          <div class="flex gap-3 flex-wrap">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" value="招牌" class="dish-tag w-5 h-5">
+              <span>招牌</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" value="微辣" class="dish-tag w-5 h-5">
+              <span>微辣</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" value="特辣" class="dish-tag w-5 h-5">
+              <span>特辣</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" value="素食" class="dish-tag w-5 h-5">
+              <span>素食</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex gap-4 pt-4">
+          <button type="button" onclick="closeDishModal()" class="flex-1 py-4 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl text-xl font-medium">
+            取消
+          </button>
+          <button type="submit" class="flex-1 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xl font-bold">
+            保存
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/dishes-data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

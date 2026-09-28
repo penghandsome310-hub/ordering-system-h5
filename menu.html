@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>点餐 - 门店平板点餐系统</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 自定义样式 */
+    :root {
+      --primary: #D97706;
+      --sidebar-width: 200px;
+      --cart-height: 280px;
+    }
+
+    body {
+      background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+      overflow: hidden;
+    }
+
+    /* 左侧菜系导航固定 */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: calc(100vh - var(--cart-height));
+      overflow-y: auto;
+      position: fixed;
+      left: 0;
+      top: 0;
+    }
+
+    /* 右侧菜品区域 */
+    .dishes-area {
+      margin-left: var(--sidebar-width);
+      height: calc(100vh - var(--cart-height));
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* 底部购物车固定 */
+    .cart-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--cart-height);
+      background: white;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    }
+
+    /* 菜系按钮激活状态 */
+    .category-btn.active {
+      background: linear-gradient(135deg, #D97706 0%, #EA580C 100%);
+      color: white;
+      font-weight: bold;
+    }
+
+    /* 辣度图标 */
+    .spicy-icon {
+      display: inline-block;
+      color: #EF4444;
+    }
+
+    /* 购物车展开面板 */
+    .cart-panel {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    /* 滚动条样式 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F3F4F6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D97706;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 左侧菜系导航 -->
+  <div class="sidebar bg-gradient-to-b from-amber-50 to-orange-50">
+    <!-- 顶部桌号显示 -->
+    <div class="p-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+      <div class="text-center">
+        <div class="text-lg font-medium">当前桌号</div>
+        <div class="text-3xl font-bold" id="currentTable">-</div>
+      </div>
+      <button onclick="goBack()" class="mt-3 w-full bg-white text-amber-700 py-2 rounded-lg font-medium hover:bg-amber-50">
+        ← 返回选桌
+      </button>
+    </div>
+
+    <!-- 菜系列表 -->
+    <div class="p-3" id="categoryList">
+      <!-- 由JavaScript生成 -->
+    </div>
+  </div>
+
+  <!-- 右侧菜品区域 -->
+  <div class="dishes-area" id="dishesArea">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold text-amber-800 mb-6" id="currentCategoryTitle">请选择菜系</h2>
+      <div class="grid grid-cols-3 gap-6" id="dishesGrid">
+        <!-- 菜品卡片由JavaScript生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部购物车 -->
+  <div class="cart-bar">
+    <!-- 购物车展开面板 -->
+    <div class="cart-panel bg-gray-50 border-b hidden" id="cartPanel">
+      <div class="p-4">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-xl font-bold text-gray-800">已选菜品</h3>
+          <button onclick="toggleCartPanel()" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        <div id="cartItemsList" class="space-y-2">
+          <!-- 购物车项目列表 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 购物车主栏 -->
+    <div class="p-4">
+      <!-- 购物车摘要 -->
+      <div class="flex items-center justify-between mb-3">
+        <button onclick="toggleCartPanel()" class="flex items-center gap-3 hover:opacity-80">
+          <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold relative">
+            🛒
+            <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-sm w-7 h-7 rounded-full flex items-center justify-center">0</span>
+          </div>
+          <div class="text-left">
+            <div class="text-sm text-gray-500">已选</div>
+            <div class="text-xl font-bold text-gray-800"><span id="cartItemCount">0</span> 道菜</div>
+          </div>
+        </button>
+
+        <div class="text-right">
+          <div class="text-sm text-gray-500">合计</div>
+          <div class="text-3xl font-bold text-amber-600">¥<span id="cartTotal">0</span></div>
+        </div>
+
+        <button onclick="submitOrder()" class="px-12 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-full text-2xl font-bold shadow-lg hover:shadow-xl transition-all">
+          提交订单
+        </button>
+      </div>
+
+      <!-- 快捷操作 -->
+      <div class="flex gap-3">
+        <button onclick="clearCart()" class="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium">
+          清空购物车
+        </button>
+        <button onclick="viewOrders()" class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium">
+          查看本桌订单
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 订单确认弹窗 -->
+  <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <h2 class="text-3xl font-bold text-amber-800 mb-6">确认订单</h2>
+
+      <div class="mb-6">
+        <div class="text-lg text-gray-700 mb-2">桌号: <span class="font-bold text-2xl text-amber-600" id="modalTableNumber"></span></div>
+        <div class="text-lg text-gray-700">下单时间: <span id="modalTime"></span></div>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-xl font-bold mb-3 text-gray-800">菜品清单</h3>
+        <div id="modalDishesList" class="space-y-2 max-h-60 overflow-y-auto">
+          <!-- 订单菜品列表 -->
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-lg font-medium text-gray-700 mb-2">备注</label>
+        <textarea id="orderNote" rows="3" placeholder="少辣、不要香菜等..." class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none text-lg"></textarea>
+      </div>
+
+      <div class="mb-6 pt-4 border-t-2">
+        <div class="flex justify-between text-2xl font-bold">
+          <span class="text-gray-800">订单总额:</span>
+          <span class="text-amber-600">¥<span id="modalTotal"></span></span>
+        </div>
+      </div>
+
+      <div class="flex gap-4">
+        <button onclick="closeOrderModal()" class="flex-1 py-4 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl text-xl font-medium">
+          取消
+        </button>
+        <button onclick="confirmOrder()" class="flex-1 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xl font-bold">
+          确认提交
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/dishes-data.js"></script>
+  <script src="js/menu.js"></script>
+</body>
+</html>
